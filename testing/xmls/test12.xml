@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<create>
+    <symbol sym="SPT">
+        <account id="123457">1001</account>
+        <account id="123457">3001</account>
+    </symbol>
+</create>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<results>
+    <status id="5">
+        <open shares="100" />
+        <executed shares="200" price="$125.00" time="" />
+    </status>
+    <status id="6">
+        <open shares="100" />
+    </status>
+    <status id="7">
+        <executed shares="200" price="$127.00" time="" />
+    </status>
+    <status id="8">
+        <open shares="500" />
+    </status>
+    <status id="9">
+        <open shares="200" />
+    </status>
+    <status id="10">
+        <open shares="400" />
+    </status>
+    <status id="11">
+        <executed shares="200" price="$127.00" time="" />
+        <executed shares="200" price="$125.00" time="" />
+    </status>
+</results>

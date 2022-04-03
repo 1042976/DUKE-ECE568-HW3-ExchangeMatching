@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<create>
+    <symbol sym="SPY">
+        <account id="123456">1000</account>
+    </symbol>
+    <symbol sym="SPT">
+        <account id="123456">1001</account>
+        <account id="123456">3001</account>
+    </symbol>
+</create>

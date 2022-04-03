@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<results>
+    <opened sym="SPY" amount="20" limit="50" id="1" />
+    <status id="1">
+        <open shares="20" />
+    </status>
+    <canceled id="1">
+        <canceled shares="20" time="" />
+    </canceled>
+</results>

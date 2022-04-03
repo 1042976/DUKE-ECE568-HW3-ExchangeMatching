@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transactions id="123456"> #contains 1 or more of the below children
+    <order sym="SPY" amount="20" limit="50"/>
+    <query id="1" />
+    <cancel id="1" />
+</transactions>
