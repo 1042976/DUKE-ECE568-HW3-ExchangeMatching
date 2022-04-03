@@ -15,7 +15,7 @@ would make the program run on four cores.
 
 To check if the server works,
 
-```
+```shell
 cd basictest
 make
 ./test <hostname> <xmlfile_1> <xmlfile_2> ... <xmldile_n>
