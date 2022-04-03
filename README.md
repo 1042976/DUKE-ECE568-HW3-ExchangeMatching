@@ -13,6 +13,16 @@ You can modify the number of cores in docker-compose.yml. For example,
 
 would make the program run on four cores.
 
+To check if the server works,
+
+```
+cd basictest
+make
+./test <hostname> <xmlfile_1> <xmlfile_2> ... <xmldile_n>
+```
+
+
+
 ## How to run tests:
 
 1. Go to the server directory ```server``` and ```./run.sh``` to start the server. Note that you will need to install libpqxx-dev
