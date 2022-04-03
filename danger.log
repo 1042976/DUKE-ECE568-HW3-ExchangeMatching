@@ -1,13 +1,7 @@
-1. Our server use pugixml as the xml parser and if it fail to parse the request from the client at the beginning,
-our would not send back any results indicating this error.
+1. Our server uses pugixml as the XML parser, and if it fails to parse the request from the client at the beginning, the server will not send back any results indicating this error.
 
-2. We do not check the format of all types of data in requests because we assume that the client sends the right format to the server.
-We only do some simple format checking. For example, when creating accounts and positions, we would check if the given account
-id is a sequence of 1 or more base-10 digitsand if the given symbol is a sequence of 1 or more alphanumeric characters. But we would not
-check the format of shares, limits, etc.
+2. We do not check the format of all types of data in requests because we assume that the client sends the correct format to the server. We only do some simple format checking. For example, when creating accounts and positions, we would check if the given account id is a sequence of 1 or more base-10 digits and if the given symbol is a sequence of 1 or more alphanumeric characters. But we would not check the format of shares, limits, etc.
 
-3. At first, we only lock the mutex when we handle the creation operation(create account and create position). But when we test the server
-with multi-thread requests, the client may not receive complete results. We then add locks to this two operation's function and the problem is
-fixed.
+3. At first, we only lock the mutex when we handle the creation operation(create an account and create a position). But when we test the server with multi-thread requests, the client may not receive complete results. We then add locks to these two operation functions, and the problem is fixed.
 
 
