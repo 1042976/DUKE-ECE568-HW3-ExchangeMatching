@@ -56,6 +56,7 @@ void ServerSocket::setUp() {
     toBind();
     toListen();
 }
+
 int ServerSocket::toAccept() {
     int new_socket;
     struct sockaddr_in address;
@@ -76,7 +77,6 @@ vector<char> ServerSocket::toReceive(int clientFd) {
         return vector < char > {};
     }
     standardizeVector(buffer);
-//    printVector(buffer);
     return buffer;
 }
 
@@ -90,9 +90,9 @@ vector<char> ServerSocket::toReceiveXML(int clientFd) {
     }
     standardizeVector(buffer);
     size_t targetLen = Buffer::getWholeBufferLength(buffer); //not take '\0' into account
-    while(buffer.size() < targetLen){
+    while (buffer.size() < targetLen) {
         int oldSize = buffer.size();
-        buffer.resize(oldSize+MAXBUFFERLEN);
+        buffer.resize(oldSize + MAXBUFFERLEN);
         bufferLen = recv(clientFd, &(buffer.data()[oldSize]), MAXBUFFERLEN, 0);
         if (bufferLen < 0) {
             throw MyException("Error: fail to receive client request");
@@ -106,7 +106,7 @@ void ServerSocket::toResponse(int clientFd, vector<char> response) {
     int status = 0;
     setZeroInTheEnd(response);
     status = send(clientFd, response.data(), response.size(), 0);
-    if(status == -1){
+    if (status == -1) {
         throw MyException("Fail to send response to the client!");
     }
 }

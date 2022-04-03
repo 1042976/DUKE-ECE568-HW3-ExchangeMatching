@@ -21,8 +21,11 @@ public:
     UniqueID();
 
     string updateID();
+
     string getUniqueID();
+
     void setUniqueID(string targetID);
 
 };
+
 #endif //ERSS_HWK4_UNIQUEID_H

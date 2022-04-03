@@ -23,14 +23,17 @@
 
 using namespace std;
 
-class ExchangeMatchingEngine{
+class ExchangeMatchingEngine {
 private:
-    shared_ptr<MyData> myData;
-    unique_ptr<ServerSocket> serverSocket;
+    shared_ptr <MyData> myData;
+    unique_ptr <ServerSocket> serverSocket;
 public:
     ExchangeMatchingEngine();
+
     void run();
-    static void handleNewRequest(int id, int clientFd, shared_ptr<MyData> myData);
+
+    static void handleNewRequest(int id, int clientFd, shared_ptr <MyData> myData);
+
     static size_t threadpoolsize;
 };
 

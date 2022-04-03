@@ -13,7 +13,8 @@ int findChar(const vector<char> &A, char target) {
     }
     return -1;
 }
-int findAnyCharInSubStr(const vector<char> &A, vector<char> target){
+
+int findAnyCharInSubStr(const vector<char> &A, vector<char> target) {
     int min_index = INT_MAX;
     for (size_t i = 0; i < target.size(); ++i) {
         int cur = findChar(A, target[i]);
@@ -59,14 +60,14 @@ void printVector(vector<char> arr) {
     cout << endl;
 }
 
-string readFile(const char* filename){
+string readFile(const char *filename) {
     std::ifstream ifs(filename);
     std::stringstream buffer;
     buffer << ifs.rdbuf();
     return buffer.str();
 }
 
-string addLenAsHeader(string content){
+string addLenAsHeader(string content) {
     int contentLen = content.length();
-    return std::to_string(contentLen)+"\n"+content;
+    return std::to_string(contentLen) + "\n" + content;
 }

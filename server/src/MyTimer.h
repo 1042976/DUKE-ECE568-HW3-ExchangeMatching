@@ -4,6 +4,7 @@
 
 #ifndef ERSS_HWK4_MYTIMER_H
 #define ERSS_HWK4_MYTIMER_H
+
 #include <chrono>
 
 namespace {

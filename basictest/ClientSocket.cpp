@@ -73,9 +73,9 @@ pair<int, vector<char>> ClientSocket::toReceiveXML() {
     }
     standardizeVector(buffer);
     size_t targetLen = Buffer::getWholeBufferLength(buffer); //not take '\0' into account
-    while(buffer.size() < targetLen){
+    while (buffer.size() < targetLen) {
         int oldSize = buffer.size();
-        buffer.resize(oldSize+MAXBUFFERLEN);
+        buffer.resize(oldSize + MAXBUFFERLEN);
         curLen = recv(serverFd, &(buffer.data()[oldSize]), MAXBUFFERLEN, 0);
         if (curLen < 0) {
             throw MyException("Error: Fail to receive response from the original server!");

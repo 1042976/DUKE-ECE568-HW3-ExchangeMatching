@@ -15,7 +15,7 @@ services:
     build: .
     command: bash -c "./run.sh db 4"
     volumes:
-    - .:/servercode
+      - .:/servercode
     ports:
       - "12345:12345"
     depends_on:

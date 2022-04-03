@@ -9,26 +9,25 @@
 #include <fstream>
 #include "ClientSocket.h"
 #include "Common.h"
-int main(int argc, char* argv[]){
-    vector<string> xmls;
+
+int main(int argc, char *argv[]) {
+    vector <string> xmls;
     string hostname = argv[1];
-    for(int i = 2; i < argc; ++i){
-        xmls.emplace_back( readFile(argv[i]));
+    for (int i = 2; i < argc; ++i) {
+        xmls.emplace_back(readFile(argv[i]));
     }
     cout << hostname << endl;
     string port = "12345";
     ClientSocket clientSocket(strToVector(hostname), strToVector(port));
-    cout << "-------------" << endl;
     try {
         clientSocket.setSocket();
         clientSocket.toConnect();
-        for(int i = 2; i < argc; ++i){
-            clientSocket.toSend(strToVector(addLenAsHeader(xmls[i-2])));
-            cout << "clientSocket.toSend(strToVector(addLenAsHeader(xmls[i-2])));" << endl;
+        for (int i = 2; i < argc; ++i) {
+            clientSocket.toSend(strToVector(addLenAsHeader(xmls[i - 2])));
             auto response = clientSocket.toReceiveXML();
             printVector(Buffer::removeHeader(response.second));
         }
-    }catch (MyException &exp){
+    } catch (MyException &exp) {
         cerr << exp.what() << endl;
     }
     return EXIT_SUCCESS;

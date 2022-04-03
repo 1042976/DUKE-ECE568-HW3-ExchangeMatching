@@ -58,4 +58,5 @@ public:
 
     static void toResponse(int clientFd, vector<char> response);
 };
+
 #endif //ERSS_HWK4_SERVERSOCKET_H
