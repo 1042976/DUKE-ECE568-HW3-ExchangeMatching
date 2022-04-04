@@ -6,4 +6,4 @@ RUN apt-get -y install g++ make postgresql libpq-dev libpqxx-dev
 RUN mkdir /servercode
 WORKDIR /servercode
 COPY . /servercode
-CMD ["chmod","+x","run.sh"]
+RUN chmod +x run.sh
