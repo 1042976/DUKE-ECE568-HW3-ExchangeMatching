@@ -51,7 +51,7 @@ public:
 
     void toSend(vector<char> allContent);
 
-    pair<int, vector<char>> toReceive();
+//    pair<int, vector<char>> toReceive();
 
     pair<int, vector<char>> toReceiveXML();
 };

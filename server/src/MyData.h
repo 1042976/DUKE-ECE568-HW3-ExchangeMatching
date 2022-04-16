@@ -12,6 +12,7 @@
 #include <vector>
 #include <algorithm>
 #include <climits>
+#include <iomanip>
 #include <fstream>
 #include <mutex>
 #include <ctime>
@@ -21,12 +22,11 @@
 #include "Order.h"
 #include "MyTimer.h"
 #include "UniqueID.h"
-
 using namespace std;
 using namespace pqxx;
 extern string PORT;
 extern int BACKLOG;
-extern size_t MAXBUFFERLEN;
+extern size_t FIRSTBUFFERLEN;
 extern string DATABASE;
 
 extern const char *CREATE_NODE;
@@ -78,7 +78,7 @@ string getCurrentTime();
 
 void printVector(vector<char> arr);
 
-float moneyToFloat(string money);
+double moneyToDouble(string money);
 
 bool isAlphanumeric(string str);
 
@@ -105,7 +105,7 @@ private:
     //helper function
     string accountExistError(string accountId);
 
-    string deductFromAccount(string accountId, int shares, float limit);
+    string deductFromAccount(string accountId, int shares, double limit);
 
     string deductFromPosition(string accountId, string sym, int shares);
 
@@ -113,7 +113,7 @@ private:
 
     pqxx::result getOrder(string orderId);
 
-    float getBalance(string accountId);
+    double getBalance(string accountId);
 
     int getAmountOfSymbol(string accountID, string symbol);
 
@@ -124,21 +124,21 @@ private:
     //order execution
     void execOrder(string orderID);
 
-    pqxx::result getSellOrder(string orderID, string accountID, string symbol, float limitPrice);
+    pqxx::result getSellOrder(string orderID, string accountID, string symbol, double limitPrice);
 
-    pqxx::result getBuyOrder(string orderID, string accountID, string symbol, float limitPrice);
+    pqxx::result getBuyOrder(string orderID, string accountID, string symbol, double limitPrice);
 
     bool execBuyToSellOrder(string buyOrderID, string sellOrderID);
 
     bool execSellToBuyOrder(string sellOrderID, string buyOrderID);
 
-    void addBalance(string accountID, float a);
+    void addBalance(string accountID, double a);
 
     void addAmountOfSymbol(string accountID, string symbol, int a);
 
     void updateOpenShares(string orderID, int u);
 
-    void insertExecuted(string orderID, int shares, float price);
+    void insertExecuted(string orderID, int shares, double price);
 
 public:
     std::mutex mtx;

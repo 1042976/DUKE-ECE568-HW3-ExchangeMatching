@@ -20,6 +20,7 @@
 #include "ServerSocket.h"
 #include "XMLParser.h"
 #include "UniqueID.h"
+#include "Buffer.h"
 
 using namespace std;
 

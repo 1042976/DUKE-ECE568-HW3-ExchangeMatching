@@ -6,10 +6,10 @@
 #define ERSS_HWK4_XMLPARSER_H
 
 #include <vector>
+#include <unistd.h>
 #include "pugixml.hpp"
 #include "MyData.h"
 #include "Order.h"
-
 using namespace std;
 
 class XMLParser {

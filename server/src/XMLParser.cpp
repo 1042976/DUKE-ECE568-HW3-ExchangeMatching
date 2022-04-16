@@ -5,12 +5,14 @@
 #include "XMLParser.h"
 
 XMLParser::XMLParser(vector<char> _xmlBuffer, shared_ptr <MyData> _myData) : myData(_myData) {
+    _xmlBuffer.emplace_back('\0');
     pugi::xml_parse_result result = this->reqDoc.load_string(_xmlBuffer.data());
     if (result) {
-        cout << "XML [" << vectorToStr(_xmlBuffer) << "] parsed without errors." << endl;
+        //cout << "XML [" << vectorToStr(_xmlBuffer) << "] parsed without errors." << endl;
     } else {
         throw MyException("Fail to parse the xml request.");
     }
+    //printReq();
     resNode = resDoc.append_child(RESULTS_NODE);
 }
 
@@ -22,7 +24,7 @@ void XMLParser::parse() {
     } else {
         throw MyException("Fail to parse the xml request.");
     }
-    printRes();
+    //printRes();
 }
 
 void XMLParser::createAccount(pugi::xml_node accountNode) {
@@ -227,24 +229,24 @@ void XMLParser::transaction() {
 }
 
 void XMLParser::printRes() {
-    std::cout << "\nWrite result xml doc to stdout with indent of 4 char:" << std::endl;
+    //std::cout << "\nWrite result xml doc to stdout with indent of 4 char:" << std::endl;
     resDoc.save(std::cout, "    ");
 }
 
 void XMLParser::printReq() {
-    std::cout << "\nWrite request xml doc to stdout with indent of 4 char:" << std::endl;
+    //std::cout << "\nWrite request xml doc to stdout with indent of 4 char:" << std::endl;
     reqDoc.save(std::cout, "    ");
 }
 
 string XMLParser::reqToStr() {
-    std::cout << "\nWrite request xml doc to stringstream with indent of 4 chars:" << std::endl;
+    //std::cout << "\nWrite request xml doc to stringstream with indent of 4 chars:" << std::endl;
     std::stringstream ss;
     reqDoc.save(ss, "    ");
     return ss.str();
 }
 
 string XMLParser::resToStr() {
-    std::cout << "\nWrite result xml doc to stringstream with indent of 4 chars:" << std::endl;
+    //std::cout << "\nWrite result xml doc to stringstream with indent of 4 chars:" << std::endl;
     std::stringstream ss;
     resDoc.save(ss, "    ");
     return ss.str();

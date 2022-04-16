@@ -3,7 +3,7 @@
 //
 #include "Common.h"
 
-size_t MAXBUFFERLEN = 1048577;
+size_t FIRSTBUFFERLEN = 1024;
 
 int findChar(const vector<char> &A, char target) {
     for (size_t i = 0; i < A.size(); ++i) {

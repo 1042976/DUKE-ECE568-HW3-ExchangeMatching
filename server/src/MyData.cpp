@@ -5,7 +5,7 @@
 
 string PORT = "12345";
 int BACKLOG = 100;
-size_t MAXBUFFERLEN = 1048577;
+size_t FIRSTBUFFERLEN = 1024;
 string DATABASE = "exchange_matching";
 
 //"create" xml
@@ -61,6 +61,7 @@ void setZeroInTheEnd(vector<char> &buffer) {
     }
 }
 
+
 int findChar(const vector<char> &A, char target) {
     for (size_t i = 0; i < A.size(); ++i) {
         if (A[i] == target) {
@@ -112,14 +113,14 @@ string getCurrentTime() {
     return dt_str;
 }
 
-float moneyToFloat(string money) {
+double moneyToDouble(string money) {
     string res = "";
     for (const auto &x: money) {
         if (isdigit(x) || x == '.') {
             res.push_back(x);
         }
     }
-    return stof(res);
+    return stod(res);
 }
 
 void printVector(vector<char> arr) {
@@ -330,7 +331,7 @@ pair <string, string> MyData::order(string accountId, string sym, string amount,
     }
     //if it is to buy, check if the balance of the account is enough. If enough, deduct from account. Otherwise return error.
     if (transaction_type == "b") {
-        msg = deductFromAccount(accountId, stoi(shares), stof(limit));
+        msg = deductFromAccount(accountId, stoi(shares), stod(limit));
         if (!msg.empty()) {
             return make_pair(msg, "");
         }
@@ -359,12 +360,11 @@ pair <string, string> MyData::order(string accountId, string sym, string amount,
     execOrder(orderID);
     return make_pair("", orderID);
 }
-
-float MyData::getBalance(string accountId) {
+double MyData::getBalance(string accountId) {
     nontransaction N(*C);
     string sql = "SELECT BALANCE FROM ACCOUNT WHERE ID = " + addApostrophe(accountId) + ";";
     pqxx::result r(N.exec(sql));
-    return moneyToFloat(r[0][0].as<string>());
+    return moneyToDouble(r[0][0].as<string>());
 }
 
 void MyData::execOrder(string orderID) {
@@ -372,7 +372,7 @@ void MyData::execOrder(string orderID) {
     string accountID = r[0][1].as<string>();
     string transactionType = r[0][2].as<string>();
     string symbol = r[0][3].as<string>();
-    float limitPrice = moneyToFloat(r[0][6].as<string>());
+    double limitPrice = moneyToDouble(r[0][6].as<string>());
 
     string sql = "";
     if (transactionType == "b") {
@@ -398,8 +398,8 @@ void MyData::execOrder(string orderID) {
     }
 }
 
-void MyData::addBalance(string accountID, float a) {
-    float balance = getBalance(accountID);
+void MyData::addBalance(string accountID, double a) {
+    double balance = getBalance(accountID);
     balance += a;
     work W(*C);
     string sql = "UPDATE ACCOUNT SET BALANCE = " + to_string(balance) +
@@ -416,7 +416,7 @@ void MyData::updateOpenShares(string orderID, int u) {
     W.commit();
 }
 
-void MyData::insertExecuted(string orderID, int shares, float price) {
+void MyData::insertExecuted(string orderID, int shares, double price) {
     work W(*C);
     string sql = "INSERT INTO EXECUTED (ORDER_ID, SHARES, PRICE, TIME) "
                  "VALUES(" +
@@ -435,18 +435,18 @@ bool MyData::execBuyToSellOrder(string buyOrderID, string sellOrderID) {
     string buyerAccountID = rB[0][1].as<string>();
 
     int buyerOpenShares = rB[0][5].as<int>();
-    float buyerLimitPrice = moneyToFloat(rB[0][6].as<string>());
+    double buyerLimitPrice = moneyToDouble(rB[0][6].as<string>());
 
     string sellerAccountID = rS[0][1].as<string>();
     int sellerOpenShares = rS[0][5].as<int>();
-    float sellerLimitPrice = moneyToFloat(rS[0][6].as<string>());
-    float executedPrice = sellerLimitPrice;
+    double sellerLimitPrice = moneyToDouble(rS[0][6].as<string>());
+    double executedPrice = sellerLimitPrice;
 
     if (buyerOpenShares <= sellerOpenShares) {
         int executedShares = buyerOpenShares;
         //update balance
-        float cost = executedPrice * executedShares;
-        float refund = buyerLimitPrice * executedShares - cost;
+        double cost = executedPrice * executedShares;
+        double refund = buyerLimitPrice * executedShares - cost;
         addBalance(buyerAccountID, refund);
         addBalance(sellerAccountID, cost);
 
@@ -463,8 +463,8 @@ bool MyData::execBuyToSellOrder(string buyOrderID, string sellOrderID) {
     } else {
         int executedShares = sellerOpenShares;
         //update balance
-        float cost = executedPrice * executedShares;
-        float refund = buyerLimitPrice * executedShares - cost;
+        double cost = executedPrice * executedShares;
+        double refund = buyerLimitPrice * executedShares - cost;
         addBalance(buyerAccountID, refund);
         addBalance(sellerAccountID, cost);
 
@@ -488,13 +488,13 @@ bool MyData::execSellToBuyOrder(string sellOrderID, string buyOrderID) {
     string sellerAccountID = rS[0][1].as<string>();
     int sellerOpenShares = rS[0][5].as<int>();
     int buyerOpenShares = rB[0][5].as<int>();
-    float buyerLimitPrice = moneyToFloat(rB[0][6].as<string>());
-    float executedPrice = buyerLimitPrice;
+    double buyerLimitPrice = moneyToDouble(rB[0][6].as<string>());
+    double executedPrice = buyerLimitPrice;
 
     if (sellerOpenShares <= buyerOpenShares) {
         int executedShares = sellerOpenShares;
         //update balance
-        float cost = executedPrice * executedShares;
+        double cost = executedPrice * executedShares;
 
         addBalance(sellerAccountID, cost);
 
@@ -513,7 +513,7 @@ bool MyData::execSellToBuyOrder(string sellOrderID, string buyOrderID) {
     } else {
         int executedShares = buyerOpenShares;
         //update balance
-        float cost = executedPrice * executedShares;
+        double cost = executedPrice * executedShares;
         addBalance(sellerAccountID, cost);
 
         //update open shares
@@ -531,7 +531,7 @@ bool MyData::execSellToBuyOrder(string sellOrderID, string buyOrderID) {
 
 }
 
-pqxx::result MyData::getSellOrder(string orderID, string accountID, string symbol, float limitPrice) {
+pqxx::result MyData::getSellOrder(string orderID, string accountID, string symbol, double limitPrice) {
     nontransaction N(*C);
     string sql = "SELECT * FROM ORDERS WHERE "
                  "ISCANCELED = FALSE AND "
@@ -545,7 +545,7 @@ pqxx::result MyData::getSellOrder(string orderID, string accountID, string symbo
     return N.exec(sql);
 }
 
-pqxx::result MyData::getBuyOrder(string orderID, string accountID, string symbol, float limitPrice) {
+pqxx::result MyData::getBuyOrder(string orderID, string accountID, string symbol, double limitPrice) {
     nontransaction N(*C);
     string sql = "SELECT * FROM ORDERS WHERE "
                  "ISCANCELED = FALSE AND "
@@ -625,7 +625,7 @@ Order MyData::cancel(string accountId, string orderId) {
     } else {
         bool isCanceled = r[0][7].as<bool>();
         int openShares = r[0][5].as<int>();
-        float limitPrice = moneyToFloat(r[0][0].as<string>());
+        double limitPrice = moneyToDouble(r[0][0].as<string>());
         string transactionType = r[0][2].as<string>();
         string orderAccountId = r[0][1].as<string>();
         string symbol = r[0][3].as<string>();
@@ -658,7 +658,7 @@ Order MyData::cancel(string accountId, string orderId) {
 
             //refund if it is buy order or return position if it is sell orders
             if (transactionType == "b") {
-                float refund = openShares * limitPrice;
+                double refund = openShares * limitPrice;
                 addBalance(orderAccountId, refund);
             } else {
                 addAmountOfSymbol(orderAccountId, symbol, openShares);
@@ -720,13 +720,14 @@ pqxx::result MyData::getExecutedOrder(string orderId) {
     return N.exec(sql);
 }
 
-string MyData::deductFromAccount(string accountId, int shares, float limit) {
+string MyData::deductFromAccount(string accountId, int shares, double limit) {
+    std::cout << std::setprecision(12);
     accountId = addApostrophe(accountId);
     work W(*C);
     string sql = "SELECT BALANCE FROM ACCOUNT WHERE "
                  "ID = " + accountId + ";";
     pqxx::result r(W.exec(sql));
-    float rest = moneyToFloat(r[0][0].as<string>()) - shares * limit;
+    double rest = moneyToDouble(r[0][0].as<string>())-shares * limit;
     if (rest < 0) {
         return "Order is rejected due to insufficient funds";
     } else {

@@ -4,7 +4,7 @@
 
 #include "ExchangeMatchingEngine.h"
 
-size_t ExchangeMatchingEngine::threadpoolsize = 5;
+size_t ExchangeMatchingEngine::threadpoolsize = 9;
 
 ExchangeMatchingEngine::ExchangeMatchingEngine() : myData(make_shared<MyData>()),
                                                    serverSocket(make_unique<ServerSocket>(
@@ -51,8 +51,6 @@ void ExchangeMatchingEngine::handleNewRequest(int id, int clientFd, shared_ptr <
 }
 
 int main(int argc, char *argv[]) {
-//    const auto processor_count = std::thread::hardware_concurrency();
-//    cout << "processor_count: " << processor_count << endl;
     if (argc > 2) {
         ExchangeMatchingEngine::threadpoolsize = constCharToInt(argv[2]);
         cout << "The size of thread pool is: " << ExchangeMatchingEngine::threadpoolsize << endl;

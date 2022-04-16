@@ -52,7 +52,6 @@ public:
 
     void setUp();
 
-    static vector<char> toReceive(int clientFd);
 
     static vector<char> toReceiveXML(int clientFd);
 

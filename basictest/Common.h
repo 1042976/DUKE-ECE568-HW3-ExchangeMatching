@@ -19,7 +19,7 @@ using std::vector;
 using std::cout;
 using std::endl;
 
-extern size_t MAXBUFFERLEN;
+extern size_t FIRSTBUFFERLEN;
 
 int findChar(const vector<char> &A, char target);
 

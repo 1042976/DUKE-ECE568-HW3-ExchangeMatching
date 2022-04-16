@@ -13,7 +13,7 @@ fi
 
 #set the number of cores to run on
 
-num="0"
+num="4"
 threadpoolsize="5"
 if [ -n "$2" ]
 then

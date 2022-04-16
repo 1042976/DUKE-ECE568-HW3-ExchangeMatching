@@ -68,44 +68,31 @@ int ServerSocket::toAccept() {
     return new_socket;
 }
 
-vector<char> ServerSocket::toReceive(int clientFd) {
-    vector<char> buffer(MAXBUFFERLEN);
-    int bufferlen = recv(clientFd, buffer.data(), buffer.size(), 0);
-    if (bufferlen < 0) {
-        throw MyException("Error: fail to receive client request");
-    } else if (bufferlen == 0) {
-        return vector < char > {};
-    }
-    standardizeVector(buffer);
-    return buffer;
-}
 
 vector<char> ServerSocket::toReceiveXML(int clientFd) {
-    vector<char> buffer(MAXBUFFERLEN);
+    vector<char> buffer(FIRSTBUFFERLEN);
     int bufferLen = recv(clientFd, buffer.data(), buffer.size(), 0);
     if (bufferLen < 0) {
         throw MyException("Error: fail to receive client request");
     } else if (bufferLen == 0) {
         return vector < char > {};
     }
-    standardizeVector(buffer);
-    size_t targetLen = Buffer::getWholeBufferLength(buffer); //not take '\0' into account
-    while (buffer.size() < targetLen) {
-        int oldSize = buffer.size();
-        buffer.resize(oldSize + MAXBUFFERLEN);
-        bufferLen = recv(clientFd, &(buffer.data()[oldSize]), MAXBUFFERLEN, 0);
-        if (bufferLen < 0) {
+    int targetLen = Buffer::getWholeBufferLength(buffer); //not take '\0' into account
+    buffer.resize(targetLen);
+    int curLen = bufferLen;
+
+    while (curLen < targetLen) {
+        bufferLen = recv(clientFd, &(buffer.data()[curLen]), targetLen-curLen, 0);
+        if(bufferLen < 0){
             throw MyException("Error: fail to receive client request");
         }
-        standardizeVector(buffer);
+        curLen += bufferLen;
     }
     return buffer;
 }
 
 void ServerSocket::toResponse(int clientFd, vector<char> response) {
-    int status = 0;
-    setZeroInTheEnd(response);
-    status = send(clientFd, response.data(), response.size(), 0);
+    int status = send(clientFd, response.data(), response.size(), 0);
     if (status == -1) {
         throw MyException("Fail to send response to the client!");
     }
