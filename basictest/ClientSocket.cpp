@@ -36,8 +36,7 @@ void ClientSocket::setSocket() {
 }
 
 void ClientSocket::toConnect() {
-    int status = 0;
-    status = connect(serverFd, servinfo->ai_addr, servinfo->ai_addrlen);
+    int status = connect(serverFd, servinfo->ai_addr, servinfo->ai_addrlen);
     if (status == -1) {
         throw MyException("Error: Fail to connect to the original server!");
     }
@@ -46,23 +45,12 @@ void ClientSocket::toConnect() {
 
 void ClientSocket::toSend(vector<char> allContent) {
     //ssize_t send(int sockfd, const void *buf, size_t len, int flags);
-    int status = 0;
-    status = send(serverFd, allContent.data(), allContent.size(), 0);
+    int status = send(serverFd, allContent.data(), allContent.size(), 0);
     if (status == -1) {
         throw MyException("Error: Fail to send request content to the original server!");
     }
 }
 
-//pair<int, vector<char> > ClientSocket::toReceive() {
-//    int curLen = 0;
-//    vector<char> buffer(MAXBUFFERLEN, '\0');
-//    curLen = recv(serverFd, buffer.data(), buffer.size(), 0);
-//    if (curLen == -1) {
-//        throw MyException("Error: Fail to receive response from the original server!");
-//    }
-//    standardizeVector(buffer);
-//    return make_pair(curLen, buffer);
-//}
 
 pair<int, vector<char>> ClientSocket::toReceiveXML() {
     vector<char> buffer(FIRSTBUFFERLEN);
@@ -73,21 +61,12 @@ pair<int, vector<char>> ClientSocket::toReceiveXML() {
     int targetLen = Buffer::getWholeBufferLength(buffer); //not take '\0' into account
     buffer.resize(targetLen);
     int curLen = bufferLen;
-    cout << "--------------------------------" << endl;
-    cout << "curLen: " << curLen << endl;
-    cout << "targetLen: " << targetLen << endl;
-    cout << "--------------------------------" << endl;
     while (curLen < targetLen) {
-        cout << "++++++++++++++++++++++++++++++" << endl;
-        cout << "curLen: " << curLen << endl;
-        cout << "targetLen: " << targetLen << endl;
-        cout << "++++++++++++++++++++++++++++++" << endl;
         bufferLen = recv(serverFd, &(buffer.data()[curLen]), targetLen-curLen, 0);
         if(bufferLen < 0){
             throw MyException("Error: fail to receive client request");
         }
         curLen += bufferLen;
-        cout << " while (curLen < targetLen) " << endl;
     }
     return make_pair(buffer.size(), buffer);
 }
